@@ -38,33 +38,21 @@ resource "aws_iam_role_policy" "machine_role_policy" {
 
   policy = <<EOF
 {
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": ["ec2:*"],
-      "Resource": ["*"]
-    },
-    {
-      "Effect": "Allow",
-      "Action": ["elasticloadbalancing:*", "autoscaling:*"],
-      "Resource": ["*"]
-    },
-    {
-      "Effect": "Allow",
-      "Action": "s3:*",
-      "Resource": [
-        "*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": "sqs:*",
-      "Resource": [
-        "*"
-      ]
-    }
-  ]
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:*",
+                "elasticloadbalancing:*",
+                "autoscaling:*",
+                "sqs:*",
+                "sns:*",
+                "s3:*"
+            ],
+            "Resource": ["*"]
+        }
+    ]
 }
 EOF
 }
@@ -99,6 +87,42 @@ resource "aws_iam_role_policy" "machine_role_policy_cloudwatch" {
       ]
     }
   ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "machine_role_policy_allow_all_ssm" {
+  name = "${var.cluster_name_short}-machine-role-policy-all-ssm"
+  role = "${aws_iam_role.machine_role.id}"
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowAccessToSSM",
+            "Effect": "Allow",
+            "Action": [
+                "ssm:DescribeAssociation",
+                "ssm:ListAssociations",
+                "ssm:GetDocument",
+                "ssm:ListInstanceAssociations",
+                "ssm:UpdateAssociationStatus",
+                "ssm:UpdateInstanceInformation",
+                "ec2messages:AcknowledgeMessage",
+                "ec2messages:DeleteMessage",
+                "ec2messages:FailMessage",
+                "ec2messages:GetEndpoint",
+                "ec2messages:GetMessages",
+                "ec2messages:SendReply",
+                "ds:CreateComputer",
+                "ds:DescribeDirectories",
+                "ec2:DescribeInstanceStatus"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
 }
 EOF
 }
@@ -144,6 +168,50 @@ data "aws_ami" "amazon_ami" {
   owners = ["amazon"] # AWS Owned AMI
 }
 
+// Role for lifecycle, because a separate role is required
+resource "aws_iam_role" "lifecycle_role" {
+  name = "${var.cluster_name_short}-lifecycle-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": { "Service": "autoscaling.amazonaws.com"},
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
+
+// IAM Role Policy for lifecycle_role
+resource "aws_iam_role_policy" "lifecycle_role_policy" {
+  name = "${var.cluster_name_short}-lifecycle-role-policy"
+  role = "${aws_iam_role.lifecycle_role.id}"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:*",
+                "elasticloadbalancing:*",
+                "autoscaling:*",
+                "sqs:*",
+                "sns:*",
+                "s3:*"
+            ],
+            "Resource": ["*"]
+        }
+    ]
+}
+EOF
+}
+
 // Outputs
 output "ami_id_ubuntu" {
   value = "${data.aws_ami.ubuntu_ami.image_id}"
@@ -153,8 +221,16 @@ output "ami_id_amazon" {
   value = "${data.aws_ami.amazon_ami.image_id}"
 }
 
-output "instance_profile_id" {
-  value = "${aws_iam_instance_profile.instance_profile.id}"
+output "iam_instance_profile" {
+  value = "${aws_iam_instance_profile.instance_profile.arn}"
+}
+
+output "iam_role" {
+  value = "${aws_iam_role.machine_role.arn}"
+}
+
+output "iam_role_lifecycle" {
+  value = "${aws_iam_role.lifecycle_role.arn}"
 }
 
 output "key_pair_name" {
