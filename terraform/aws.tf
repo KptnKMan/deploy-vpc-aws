@@ -236,3 +236,11 @@ output "iam_role_lifecycle" {
 output "key_pair_name" {
   value = "${aws_key_pair.key_pair.key_name}"
 }
+
+output "management_ips" {
+  value = "${var.management_ips}"
+}
+
+output "management_ips_personal" {
+  value = "${var.management_ips_personal}"
+}

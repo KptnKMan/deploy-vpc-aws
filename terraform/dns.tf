@@ -50,7 +50,7 @@ resource "aws_route53_record" "ops_bastion" {
 
 // Outputs
 output "_connect_bastion_r53" {
-  value = "connect using: ssh -A ec2-user@${aws_route53_record.ops_bastion.fqdn}"
+  value = "connect to bastion using: ssh -A ec2-user@${aws_route53_record.ops_bastion.fqdn}"
 }
 
 output "route53_zone_id" {

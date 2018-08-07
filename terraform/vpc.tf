@@ -112,8 +112,16 @@ resource "aws_security_group" "common_sg" {
 }
 
 // Outputs
-output "vpc_aws_region" {
+output "vpc_region" {
   value = "${var.aws_region}"
+}
+
+output "vpc_region_azs" {
+  value = "${var.aws_availability_zones}"
+}
+
+output "vpc_region_azs2" {
+  value = "${var.aws_availability_zones}"
 }
 
 output "vpc_id" {

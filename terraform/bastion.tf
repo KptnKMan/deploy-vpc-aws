@@ -76,11 +76,11 @@ resource "aws_eip_association" "bastion_eip_assoc" {
 
 // Outputs
 output "_connect_bastion_ip" {
-  value = "connect using: ssh -A ec2-user@${aws_eip.bastion_eip.public_ip}"
+  value = "connect to bastion using: ssh -A ec2-user@${aws_eip.bastion_eip.public_ip}"
 }
 
 output "_connect_bastion_dns" {
-  value = "connect using: ssh -A ec2-user@${aws_instance.bastion_server.public_dns}"
+  value = "connect to bastion using: ssh -A ec2-user@${aws_instance.bastion_server.public_dns}"
 }
 
 output "bastion_sg_id" {

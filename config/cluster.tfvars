@@ -19,8 +19,6 @@ dns_domain_public       = "bifromedia.com"
 dns_urls = {
   primary_domain        = "bifromedia.com"
   url_bastion           = "kareempoc-bastion"
-  url_jenkins           = "kareempoc-jenkins"
-  url_core_analytics    = "kareempoc-analytics"
 }
 
 deploy_cidr             = "10.1.0.0/16"
