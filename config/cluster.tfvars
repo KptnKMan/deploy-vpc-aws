@@ -35,7 +35,7 @@ management_ips_personal = "2.2.2.2/32"
 
 instance_types = {
   // instance sizes of ec2 instances - may require terraform taint of ASG to update
-  bastion               = "t2.micro" // "m3.medium"
+  bastion               = "t3.micro" // "m3.medium"
 
   // Not the spot price you pay all the time, but maximum bid
   spot_max_bid          = "7.2"
