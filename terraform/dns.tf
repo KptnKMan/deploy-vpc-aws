@@ -18,24 +18,24 @@ data "aws_route53_zone" "dns_domain_public" {
 
 resource "aws_route53_record" "ops_bastion" {
   zone_id = "${data.aws_route53_zone.dns_domain_public.zone_id}"
-  name    = "${var.cluster_name_short}-bastion"
-  type    = "A"
-  ttl     = "60"
-  records = ["${aws_eip.bastion_eip.public_ip}"]
+  name    = "${var.dns_urls["url_bastion"]}"
+  type    = "CNAME"
+  ttl     = "5"
+
+  weighted_routing_policy {
+    weight = 10
+  }
+
+  set_identifier = "${var.dns_urls["url_bastion"]}"
+  records        = ["${aws_spot_instance_request.bastion_server.public_dns}"]
 }
 
 # resource "aws_route53_record" "ops_bastion" {
 #   zone_id = "${data.aws_route53_zone.dns_domain_public.zone_id}"
-#   name    = "${var.cluster_name_short}-bastion"
-#   type    = "CNAME"
-#   ttl     = "5"
-
-#   weighted_routing_policy {
-#     weight = 10
-#   }
-
-#   set_identifier = "${var.cluster_name_short}-bastion"
-#   records        = ["${aws_instance.bastion_server.public_dns}"]
+#   name    = "${var.dns_urls["url_bastion"]}"
+#   type    = "A"
+#   ttl     = "60"
+#   records = ["${aws_spot_instance_request.bastion_server.public_ip}"]
 # }
 
 ## clustername.mydomain.com
