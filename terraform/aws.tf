@@ -127,6 +127,45 @@ resource "aws_iam_role_policy" "machine_role_policy_allow_all_ssm" {
 EOF
 }
 
+resource "aws_iam_role_policy" "machine_role_policy_allow_kube_ingress" {
+  name = "${var.cluster_name_short}-machine-role-policy-kube-ingress"
+  role = "${aws_iam_role.machine_role.id}"
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Sid": "AllowKubeIngressController",
+        "Effect": "Allow",
+        "Action": [
+          "acm:ListCertificates",
+          "acm:DescribeCertificate",
+          "autoscaling:DescribeAutoScalingGroups",
+          "autoscaling:DescribeLoadBalancerTargetGroups",
+          "autoscaling:AttachLoadBalancers",
+          "autoscaling:DetachLoadBalancers",
+          "autoscaling:DetachLoadBalancerTargetGroups",
+          "autoscaling:AttachLoadBalancerTargetGroups",
+          "cloudformation:*",
+          "elasticloadbalancing:*",
+          "elasticloadbalancingv2:*",
+          "ec2:DescribeInstances",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeRouteTables",
+          "ec2:DescribeVpcs",
+          "iam:GetServerCertificate",
+          "iam:ListServerCertificates"
+        ],
+        "Resource": [
+          "*"
+        ]
+      }
+    ]
+}
+EOF
+}
+
 // Instance profile for machines
 resource "aws_iam_instance_profile" "instance_profile" {
   name  = "${var.cluster_name_short}-machine-instance-profile"

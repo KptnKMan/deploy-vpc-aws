@@ -17,7 +17,6 @@ s3_state_bucket         = "kareempoc-state"
 dns_domain_public       = "bifromedia.com"
 
 dns_urls = {
-  primary_domain        = "bifromedia.com"
   url_bastion           = "kareempoc-bastion"
 }
 
