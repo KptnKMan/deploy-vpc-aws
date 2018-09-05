@@ -1,8 +1,8 @@
 #!/bin/bash
 
 echo \
-"### README ### \
-This script runs to set instance tags for spot instances \
+"### README ###
+This script runs to set instance tags for spot instances
 because Terraform does not tag spot instances.
 ### END ###"
 
