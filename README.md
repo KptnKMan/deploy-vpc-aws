@@ -7,14 +7,14 @@ Currently it is in testing, and may not work.
 
 It contains:
 
-* (WIP) Documentation for setup and management
-* (WIP) Deployment VPC, Subnets, Routes, etc
-* (WIP) Bastion EC2 server and Security Group
-* (TBC) Default configuration and settings to build environment
+* [x] Documentation for setup and management
+* [x] Deployment VPC, Subnets, Routes, etc
+* [x] Bastion EC2 server and Security Group
+* [x] Default configuration and settings to build environment
 
 Additional documentation for setup can be found in [docs](docs), when they become available.
 
-Best to start at the [Setup doc](docs/setup.md) to setup an environment.
+Best to start at the [setup doc](docs/setup.md) to setup an environment.
 
 ## Basic Requirements
 
