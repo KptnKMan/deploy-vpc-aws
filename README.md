@@ -36,6 +36,7 @@ AWS
   * common-sg - SG for all instances, basic universal rules
   * bastion-sg - SG for bastion, access to all nodes
 * 1x EC2 Spot Instance (Bastion host)
+  * spot instance will provision and tag itself using credentials and script
 
 ## Notes
 
@@ -49,6 +50,12 @@ Terraform Outputs:
 
 ## Todos & Known issues
 
-* [x] update terraform to latest 10.x+
-* [x] Fix some terraform code inconstencies
-* [x] Instance ssh-keypair auto-generation
+* Security
+  * [x] Instance ssh-keypair auto-generation
+    * [x] terraform provision instance SSH keypair
+* Documentation
+* AWS-specific
+* Terraform
+  * [x] update terraform to latest 10.x+
+  * [x] Fix some terraform code inconstencies
+* Other
