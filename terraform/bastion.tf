@@ -47,18 +47,34 @@ resource "aws_spot_instance_request" "bastion_server" {
   spot_type = "one-time"
   spot_price = "${var.instance_types["spot_max_bid"]}"
   wait_for_fulfillment = true
+
+  // Tag will not be added. Below script will copy tags from spot request to the instance using AWS CLI.
+  // https://github.com/terraform-providers/terraform-provider-aws/issues/32
+  // More details: https://akomljen.com/terraform-and-aws-spot-instances/
+    tags = "${merge(
+    local.aws_tags,
+    map(
+      "Name", "${var.deploy_name_short}-spot-ec2-bastion"
+    )
+  )}"
+
+  provisioner "file" {
+    source = "terraform/templates/set_spot_ec2_tags.sh"
+    destination = "/home/ec2-user/set_spot_ec2_tags.sh"
+    connection {
+      user = "ec2-user"
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "bash /home/ec2-user/set_spot_ec2_tags.sh ${var.aws_access_key} ${var.aws_secret_key} ${var.aws_region} ${aws_spot_instance_request.bastion_server.id} ${aws_spot_instance_request.bastion_server.spot_instance_id}"
+    ]
+    connection {
+      user = "ec2-user"
+    }
+  }
 }
-
-# // EIP for bastion
-# resource "aws_eip" "bastion_eip" {
-#   vpc = true
-# }
-
-# // Associate EIP to bastion instance
-# resource "aws_eip_association" "bastion_eip_assoc" {
-#   instance_id   = "${aws_spot_instance_request.bastion_server.id}"
-#   allocation_id = "${aws_eip.bastion_eip.id}"
-# }
 
 // Outputs
 output "_connect_bastion_ip" {

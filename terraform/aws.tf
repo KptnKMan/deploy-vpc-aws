@@ -34,7 +34,8 @@ locals {
 // Keypair that will be associated with all instances
 resource "aws_key_pair" "key_pair" {
   key_name   = "${var.key_name}"
-  public_key = "${file("${var.cluster_config_location}/${var.key_name}.pub")}"
+  # public_key = "${file("${var.cluster_config_location}/${var.key_name}.pub")}"
+  public_key = "${tls_private_key.key_pair.public_key_openssh}"
 }
 
 // Role assigned to all machines
