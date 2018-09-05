@@ -5,19 +5,15 @@
 // private key file
 key_name                = "kareempoc"
 
-cluster_name            = "Kareem POC Deployment"
+deploy_name             = "Kareem POC Base VPC"
 
-cluster_name_short      = "kareempoc"
-
-s3_backup_bucket        = "kareempoc-backup"
-
-s3_state_bucket         = "kareempoc-state"
+deploy_name_short       = "kareempocvpc"
 
 // primary dns domain, aka route53 hosted zone / dns domain / etc
 dns_domain_public       = "bifromedia.com"
 
 dns_urls = {
-  url_bastion           = "kareempoc-bastion"
+  url_bastion           = "kareempoc-vpc-bastion"
 }
 
 deploy_cidr             = "10.1.0.0/16"
@@ -40,12 +36,11 @@ instance_types = {
   spot_max_bid          = "7.2"
 }
 
+// Common Tags for all resources in deployment
 cluster_tags = {
-  Env                   = "Kareem POC Deployment"
-  Role                  = "Kareem POC Deployment"
-  Owner                 = "Kareem Operations"
-  Team                  = "Kareem Operations"
-  Project-Budget        = "kareem-project-code"
-  ScheduleInfo          = "StopToday"
-  MonitoringInfo        = "1"
+  Role                  = "Dev"
+  Service               = "Base Infrastructure"
+  Business-Unit         = "INFRE"
+  Owner                 = "OpsEng"
+  Purpose               = "Base VPC"
 }

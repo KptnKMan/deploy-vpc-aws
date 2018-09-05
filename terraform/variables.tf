@@ -20,19 +20,11 @@ variable "key_name" {
   type = "string"
 }
 
-variable "cluster_name" {
+variable "deploy_name" {
   type = "string"
 }
 
-variable "cluster_name_short" {
-  type = "string"
-}
-
-variable "s3_backup_bucket" {
-  type = "string"
-}
-
-variable "s3_state_bucket" {
+variable "deploy_name_short" {
   type = "string"
 }
 
@@ -59,19 +51,6 @@ variable "public_cidr" {
   type = "list"
 }
 
-variable "cluster_tags" {
-  default = {
-    Terraform           = "true"
-    Env                 = "Deployment"
-    Role                = "Deployment"
-    Owner               = "Kareem Operations"
-    Team                = "Kareem Operations"
-    Project-Budget      = "some-project-tag"
-    ScheduleInfo        = "StopNever"
-    MonitoringInfo      = "1"
-  }
-}
-
 variable "instance_types" {
   default = {
     bastion             = "t2.micro" #"m3.medium"
@@ -90,4 +69,14 @@ variable "management_ips_personal" {
 
 variable cluster_config_location {
   type = "string"
+}
+
+variable "cluster_tags" {
+  default = {
+    Role                = "Dev"
+    Service             = "Base Infrastructure"
+    Business-Unit       = "INFRE"
+    Owner               = "OpsEng"
+    Purpose             = "Base VPC"
+  }
 }

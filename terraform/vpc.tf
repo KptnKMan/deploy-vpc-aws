@@ -4,7 +4,7 @@ module "deploy_vpc" {
   source               = "github.com/terraform-aws-modules/terraform-aws-vpc" # replaced depreciated module repo
   #source               = "terraform-aws-modules/vpc/aws" # same as new module repo
 
-  name                 = "${var.cluster_name}-deploy-vpc"
+  name                 = "${var.deploy_name_short}-deploy-vpc"
 
   azs                  = "${var.aws_availability_zones}"
 
@@ -25,16 +25,9 @@ module "deploy_vpc" {
   enable_s3_endpoint   = false
   enable_dynamodb_endpoint = false
 
-  tags {
-    Terraform          = "${var.cluster_tags["Terraform"]}"
-    Env                = "${var.cluster_tags["Env"]}"
-    Role               = "${var.cluster_tags["Role"]}"
-    Owner              = "${var.cluster_tags["Owner"]}"
-    Team               = "${var.cluster_tags["Team"]}"
-    Project-Budget     = "${var.cluster_tags["Project-Budget"]}"
-    ScheduleInfo       = "${var.cluster_tags["ScheduleInfo"]}"
-    MonitoringInfo     = "${var.cluster_tags["MonitoringInfo"]}"
-  }
+  tags = "${merge(
+    local.aws_tags,
+  )}"
 }
 
 // THIS IS USED FOR TESTING!!!
@@ -50,7 +43,7 @@ module "deploy_vpc" {
 
 // Common Security Group for all machines
 resource "aws_security_group" "common_sg" {
-  name          = "${var.cluster_name_short}-sg-common"
+  name          = "${var.deploy_name_short}-sg-common"
   description   = "Traffic support on all machines"
   vpc_id        = "${module.deploy_vpc.vpc_id}"
 
@@ -98,17 +91,13 @@ resource "aws_security_group" "common_sg" {
   }
 
   // set tags
-  tags {
-    Name               = "${var.cluster_name_short}-sg-common"
-    Terraform          = "${var.cluster_tags["Terraform"]}"
-    Env                = "${var.cluster_tags["Env"]}"
-    Role               = "${var.cluster_tags["Role"]}"
-    Owner              = "${var.cluster_tags["Owner"]}"
-    Team               = "${var.cluster_tags["Team"]}"
-    Project-Budget     = "${var.cluster_tags["Project-Budget"]}"
-    ScheduleInfo       = "${var.cluster_tags["ScheduleInfo"]}"
-    MonitoringInfo     = "${var.cluster_tags["MonitoringInfo"]}"
-  }
+
+  tags = "${merge(
+    local.aws_tags,
+    map(
+      "Name", "${var.deploy_name_short}-sg-common"
+    )
+  )}"
 }
 
 // Outputs

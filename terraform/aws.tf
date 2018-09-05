@@ -6,6 +6,31 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
+// Define the common tags for all resources
+// https://github.com/hashicorp/terraform/blob/master/website/docs/configuration/locals.html.md
+locals {
+  aws_tags = {
+    Role           = "${var.cluster_tags["Role"]}"
+    Service        = "${var.cluster_tags["Service"]}"
+    Business-Unit  = "${var.cluster_tags["Business-Unit"]}"
+    Owner          = "${var.cluster_tags["Owner"]}"
+    Purpose        = "${var.cluster_tags["Purpose"]}"
+    Terraform      = "True"
+  }
+}
+# Extra Tags:
+# Name: "Some Resource" <-- required
+# RetentionPriority: "1-5" <-- optional
+#
+# Use common tags in resources with below example:
+#
+#  tags = "${merge(
+#    local.aws_tags,
+#    map(
+#      "Name", "awesome-app-server"
+#    )
+#  )}"
+
 // Keypair that will be associated with all instances
 resource "aws_key_pair" "key_pair" {
   key_name   = "${var.key_name}"
@@ -14,7 +39,7 @@ resource "aws_key_pair" "key_pair" {
 
 // Role assigned to all machines
 resource "aws_iam_role" "machine_role" {
-  name = "${var.cluster_name_short}-machine-role"
+  name = "${var.deploy_name_short}-machine-role"
 
   assume_role_policy = <<EOF
 {
@@ -33,7 +58,7 @@ EOF
 // This policy allows Kubernetes to configure loadbalancing, attach volumes, etc.
 // It also supports using the AWS cli to retrieve information about loadbalancers.
 resource "aws_iam_role_policy" "machine_role_policy" {
-  name = "${var.cluster_name_short}-machine-role-policy"
+  name = "${var.deploy_name_short}-machine-role-policy"
   role = "${aws_iam_role.machine_role.id}"
 
   policy = <<EOF
@@ -59,7 +84,7 @@ EOF
 
 // This policy allows Kubernetes to access CloudWatch for logs/metrics.
 resource "aws_iam_role_policy" "machine_role_policy_cloudwatch" {
-  name = "${var.cluster_name_short}-machine-role-policy-cloudwatch"
+  name = "${var.deploy_name_short}-machine-role-policy-cloudwatch"
   role = "${aws_iam_role.machine_role.id}"
 
   policy = <<EOF
@@ -91,8 +116,9 @@ resource "aws_iam_role_policy" "machine_role_policy_cloudwatch" {
 EOF
 }
 
+// Policy to allow AWS instance SSM checks
 resource "aws_iam_role_policy" "machine_role_policy_allow_all_ssm" {
-  name = "${var.cluster_name_short}-machine-role-policy-all-ssm"
+  name = "${var.deploy_name_short}-machine-role-policy-all-ssm"
   role = "${aws_iam_role.machine_role.id}"
   policy = <<EOF
 {
@@ -127,8 +153,9 @@ resource "aws_iam_role_policy" "machine_role_policy_allow_all_ssm" {
 EOF
 }
 
+// Policy to allow Kubernetes workers kube-ingress access
 resource "aws_iam_role_policy" "machine_role_policy_allow_kube_ingress" {
-  name = "${var.cluster_name_short}-machine-role-policy-kube-ingress"
+  name = "${var.deploy_name_short}-machine-role-policy-kube-ingress"
   role = "${aws_iam_role.machine_role.id}"
   policy = <<EOF
 {
@@ -168,7 +195,7 @@ EOF
 
 // Instance profile for machines
 resource "aws_iam_instance_profile" "instance_profile" {
-  name  = "${var.cluster_name_short}-machine-instance-profile"
+  name  = "${var.deploy_name_short}-machine-instance-profile"
   path  = "/"
   role = "${aws_iam_role.machine_role.name}"
 }
@@ -209,7 +236,7 @@ data "aws_ami" "amazon_ami" {
 
 // Role for lifecycle, because a separate role is required
 resource "aws_iam_role" "lifecycle_role" {
-  name = "${var.cluster_name_short}-lifecycle-role"
+  name = "${var.deploy_name_short}-lifecycle-role"
 
   assume_role_policy = <<EOF
 {
@@ -227,7 +254,7 @@ EOF
 
 // IAM Role Policy for lifecycle_role
 resource "aws_iam_role_policy" "lifecycle_role_policy" {
-  name = "${var.cluster_name_short}-lifecycle-role-policy"
+  name = "${var.deploy_name_short}-lifecycle-role-policy"
   role = "${aws_iam_role.lifecycle_role.id}"
 
   policy = <<EOF
