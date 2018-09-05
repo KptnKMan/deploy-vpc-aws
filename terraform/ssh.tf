@@ -31,7 +31,7 @@ resource "null_resource" "render_certs" {
 }
 
 // Output
-output "instance_key_pair_ssh_pubkey" {
+output "key_pair_ssh_pubkey" {
   value = "${tls_private_key.key_pair.public_key_openssh}"
   sensitive = true
 }
