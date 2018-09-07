@@ -1,7 +1,7 @@
 // Security Group for bastion
 resource "aws_security_group" "bastion_sg" {
   name        = "${var.deploy_name_short}-sg-bastion"
-  description = "Bastion host traffic"
+  description = "base deploy ${var.deploy_name_short} Bastion host traffic"
   vpc_id      = "${module.deploy_vpc.vpc_id}"
 
   # Allow incoming SSH from management ips

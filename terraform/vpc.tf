@@ -44,7 +44,7 @@ module "deploy_vpc" {
 // Common Security Group for all machines
 resource "aws_security_group" "common_sg" {
   name          = "${var.deploy_name_short}-sg-common"
-  description   = "Traffic support on all machines"
+  description   = "base deploy ${var.deploy_name_short} Common Traffic support on all machines"
   vpc_id        = "${module.deploy_vpc.vpc_id}"
 
   // Allow all outbound tcp traffic
