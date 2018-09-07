@@ -21,8 +21,8 @@ resource "aws_security_group" "bastion_sg" {
 }
 
 // Cloud config template for bastion
-data "template_file" "bastion_cloud_config" {
-  template = "${file("terraform/templates/bastion_cloud_config.yml")}"
+data "template_file" "cloud_config_amzlinux_bastion" {
+  template = "${file("terraform/templates/cloud_config_amzlinux_bastion.yml")}"
 }
 
 // Pick a random subnet for bastion
@@ -41,7 +41,7 @@ resource "aws_spot_instance_request" "bastion_server" {
   vpc_security_group_ids      = ["${aws_security_group.common_sg.id}", "${aws_security_group.bastion_sg.id}"]
   subnet_id                   = "${random_shuffle.bastion_az.result[0]}"
   
-  user_data                   = "${data.template_file.bastion_cloud_config.rendered}"
+  user_data                   = "${data.template_file.cloud_config_amzlinux_bastion.rendered}"
   associate_public_ip_address = true
 
   spot_type = "one-time"
