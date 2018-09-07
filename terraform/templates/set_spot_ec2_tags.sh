@@ -1,10 +1,10 @@
 #!/bin/bash
 
-echo \
-"### README ###
+echo "$(tput setaf 3)\
+### README ###
 This script runs to set instance tags for spot instances
 because Terraform does not tag spot instances.
-### END ###"
+### END ###$(tput sgr 0)"
 
 # Install additional requirements Ubuntu
 sudo apt-get update && sudo apt-get install -y python-pip
