@@ -84,17 +84,42 @@ cd ~/Projects/deploy-vpc-aws)
 
 ## Running Terraform
 
-```
+You need to initialise the environment before you can deploy.
+This will download any modules and provisioners you need.
+
+```bash
 terraform init terraform
 terraform get terraform
+```
 
+This is an optional step to display changes, without the intention to apply them now.
+Useful for planning changes and checking for template errors.
+
+```bash
 terraform plan -input=false -state="config/cluster.state" -var "cluster_config_location=config" -var-file="config/cluster.tfvars" "terraform"
+```
 
+This is where we're cooking with gas, applying our desired state to the remote environment(s).
+
+```bash
 terraform apply -input=false -state="config/cluster.state" -var "cluster_config_location=config" -var-file="config/cluster.tfvars" "terraform"
+```
+
+# Connecting to resources
+
+## Add your generated SSH key to SSH daemon
+
+```bash
+ssh-add config/[YOUR_GENERATED_KEYFILE].key
 ```
 
 # Cleanup
 
-```
+## Tear down environment.
+
+This command will tear down the deployed environment.
+Note: Remember, if you have deployed any dependant templates ([Hint hint](https://github.com/KptnKMan/deploy-kube)), you should tear those down first.
+
+```bash
 terraform destroy -input=false -state="config/cluster.state" -var "cluster_config_location=config" -var-file="config/cluster.tfvars" "terraform"
 ```
