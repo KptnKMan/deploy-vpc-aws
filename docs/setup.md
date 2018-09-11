@@ -43,9 +43,11 @@ Expand-Archive $HOME\Downloads\terraform_0.11.7_windows_amd64.zip -DestinationPa
 
 ## Prepare Terraform variables
 
+The Terraform [AWS provider](https://www.terraform.io/docs/providers/aws/index.html) has a few different behaviours, in the current version, however, if you do not specify a set of credentials it will automatically use your default AWS CLI credentials file (Typical location `~/.aws/credentials`).
+
 The easiest way is to create and source a variables file:
 
-* Copy file `~/Projects/deploy-vpc-aws/config/aws_credentials.env.sample` to a new file `~/Projects/deploy-vpc-aws/config/aws_credentials.env.[YOUR CREDENTIALS]`
+* Copy file `~/Projects/deploy-vpc-aws/config/aws_credentials.env.sample` to a new file `~/Projects/deploy-vpc-aws/config/aws_credentials.env.[SOMETHING/YOURNAME/ETC]`
 * Update the file with your credentials
 
 Linux/MacOS:
@@ -109,8 +111,37 @@ terraform apply -input=false -state="config/cluster.state" -var "cluster_config_
 
 ## Add your generated SSH key to SSH daemon
 
+You need to add the generated SSH key to your SSH daemon, so that you can connect.
+
 ```bash
 ssh-add config/[YOUR_GENERATED_KEYFILE].key
+```
+
+## Connect to Bastion instance
+
+After any apply, there will be instructions of how to connect to the VPC bastion node.
+The instruction will show as Template outputs: `_connect_bastion_dns`, `_connect_bastion_ip` and `_connect_bastion_r53`
+
+```bash
+_connect_bastion_dns = connect to bastion using: ssh -A ec2-user@ec2-11-12-13-14.eu-west-1.compute.amazonaws.com
+_connect_bastion_ip = connect to bastion using: ssh -A ec2-user@11.12.13.14
+```
+
+If you are using an AWS Route53 hosted zone, there should also be an instruction to connect using DNS name:
+
+```bash
+_connect_bastion_r53 = connect to bastion using: ssh -A ec2-user@kareempoc-vpc-bastion.myr53domain.com
+```
+
+## Connect from Bastion instance to ETCD/Controller/Worker instances
+
+First you should check the AWS console, or use AWS CLI to get the list of IPs of your instances.
+
+Once you have your target instance IP, and have connected to your bastion instance, you should be able to directly connect to any node. The nodes will all use the same SSH key-pair, and will authenticate without needing to specify anything.
+From the bastion:
+
+```bash
+ssh ubuntu@10.11.12.13
 ```
 
 # Cleanup
