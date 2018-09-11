@@ -85,6 +85,6 @@ output "_connect_bastion_dns" {
   value = "connect to bastion using: ssh -A ec2-user@${aws_spot_instance_request.bastion_server.public_dns}"
 }
 
-output "bastion_sg_id" {
+output "sg_id_bastion" {
   value = "${aws_security_group.bastion_sg.id}"
 }

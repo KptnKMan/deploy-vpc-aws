@@ -125,6 +125,6 @@ output "vpc_subnets_private" {
   value = "${module.deploy_vpc.private_subnets}"
 }
 
-output "common_sg_id" {
+output "sg_id_common" {
   value = "${aws_security_group.common_sg.id}"
 }
