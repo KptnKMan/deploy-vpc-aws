@@ -15,9 +15,9 @@ This doc is intended to:
 * Linux is assumed to be Ubuntu 16.04
 * Windows is assumed to be Microsoft Windows 10
 
-# Setup Tools
+## Setup Tools
 
-## Setup Terraform
+### Setup Terraform
 
 Linux:
 
@@ -40,13 +40,15 @@ Invoke-WebRequest -Uri https://releases.hashicorp.com/terraform/0.11.7/terraform
 Expand-Archive $HOME\Downloads\terraform_0.11.7_windows_amd64.zip -DestinationPath $env:SystemRoot
 ```
 
-# Setup Environment Variables
+## Setup Environment Variables
 
-## Prepare Terraform variables
+### Notes
 
-The Terraform [AWS provider](https://www.terraform.io/docs/providers/aws/index.html) has a few different behaviours, in the current version, however, if you do not specify a set of credentials it will automatically use your default AWS CLI credentials file (Typical location `~/.aws/credentials`).
+* The Terraform [AWS provider](https://www.terraform.io/docs/providers/aws/index.html) has a few different behaviours, in the current version, however, if you do not specify a set of credentials it will automatically use your default AWS CLI credentials file (Typical location `~/.aws/credentials`).
 
-The easiest way is to create and source a variables file:
+### Prepare Terraform variables
+
+My preferred method is to create and source a variables file:
 
 * Copy file `~/Projects/deploy-vpc-aws/config/aws_credentials.env.sample` to a new file `~/Projects/deploy-vpc-aws/config/aws_credentials.env.[SOMETHING/YOURNAME/ETC]`
 * Update the file with your credentials
@@ -73,9 +75,9 @@ Get-Content $HOME\Projects\deploy-vpc-aws\aws_credentials.env.[YOUR CREDENTIALS]
 function get-zones-short { $aws_zones_raw = @(); (aws ec2 describe-availability-zones) -split "\s" | ForEach-Object {$aws_zones_raw += Select-String -InputObject $_ -Pattern '([a-z]+-[a-z]+-[0-9][a-z])'}; $aws_zones1 = $aws_zones_raw  -replace '"','' -replace ',',''; $aws_zones2 = $aws_zones1 -join '\",\"'; $Global:AWS_ZONES = $aws_zones1 -join ','; $Global:AWS_AVAILABILITY_ZONES = '\"'+$aws_zones2+'\"' } get-zones-short; $Global:AWS_AVAILABILITY_ZONES
 ```
 
-# Creating and updating infrastructure
+## Creating and updating infrastructure
 
-## Notes
+### Notes
 
 * make sure all commands are run from root of repo directory
 
@@ -85,7 +87,7 @@ Eg:
 cd ~/Projects/deploy-vpc-aws)
 ```
 
-## Running Terraform
+### Running Terraform
 
 You need to initialise the environment before you can deploy.
 This will download any modules and provisioners you need.
@@ -108,9 +110,9 @@ This is where we're cooking with gas, applying our desired state to the remote e
 terraform apply -input=false -state="config/cluster.state" -var "cluster_config_location=config" -var-file="config/cluster.tfvars" "terraform"
 ```
 
-# Connecting to resources
+## Connecting to resources
 
-## Add your generated SSH key to SSH daemon
+### Add your generated SSH key to SSH daemon
 
 You need to add the generated SSH key to your SSH daemon, so that you can connect.
 
@@ -118,7 +120,7 @@ You need to add the generated SSH key to your SSH daemon, so that you can connec
 ssh-add config/[YOUR_GENERATED_KEYFILE].key
 ```
 
-## Connect to Bastion instance
+### Connect to Bastion instance
 
 After any apply, there will be instructions of how to connect to the VPC bastion node.
 The instruction will show as Template outputs: `_connect_bastion_dns`, `_connect_bastion_ip` and `_connect_bastion_r53`
@@ -134,7 +136,7 @@ If you are using an AWS Route53 hosted zone, there should also be an instruction
 _connect_bastion_r53 = connect to bastion using: ssh -A ec2-user@kareempoc-vpc-bastion.myr53domain.com
 ```
 
-## Connect from Bastion instance to ETCD/Controller/Worker instances
+### Connect from Bastion instance to ETCD/Controller/Worker instances
 
 First you should check the AWS console, or use AWS CLI to get the list of IPs of your instances.
 
@@ -145,9 +147,9 @@ From the bastion:
 ssh ubuntu@10.11.12.13
 ```
 
-# Cleanup
+## Cleanup
 
-## Tear down environment.
+### Tear down environment.
 
 This command will tear down the deployed environment.
 
@@ -155,4 +157,10 @@ Note: Remember, if you have deployed any dependant templates ([Hint hint](https:
 
 ```bash
 terraform destroy -input=false -state="config/cluster.state" -var "cluster_config_location=config" -var-file="config/cluster.tfvars" "terraform"
+```
+
+After teardown, you can additionally run the debug_cleanup.sh script if you wish to start fresh (Linux/Mac only).
+
+```bash
+. debug_cleanup.sh
 ```
