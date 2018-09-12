@@ -2,9 +2,10 @@
 
 This doc is intended to:
 
-* Help configure your local tools to interact with remote environment.
-* Bootstrap a working VPC environment.
+* Help you configure your local tools to interact with remote environment.
+* Help you Bootstrap a working VPC environment.
 * Terraform instructions will be valid for other projects using this template.
+  * Any contradiction of requirements/instructions, use the child templates instructions.
 
 ## Basic premise
 
