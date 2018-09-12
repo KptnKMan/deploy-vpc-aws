@@ -149,11 +149,13 @@ ssh ubuntu@10.11.12.13
 
 ## Cleanup
 
+### Notes
+
+* Remember, if you have deployed any dependant templates ([Hint hint](https://github.com/KptnKMan/deploy-kube)), you should tear those down first.
+
 ### Tear down environment.
 
 This command will tear down the deployed environment.
-
-Note: Remember, if you have deployed any dependant templates ([Hint hint](https://github.com/KptnKMan/deploy-kube)), you should tear those down first.
 
 ```bash
 terraform destroy -input=false -state="config/cluster.state" -var "cluster_config_location=config" -var-file="config/cluster.tfvars" "terraform"
