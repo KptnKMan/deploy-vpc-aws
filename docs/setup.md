@@ -153,7 +153,7 @@ ssh ubuntu@10.11.12.13
 
 * Remember, if you have deployed any dependant templates ([Hint hint](https://github.com/KptnKMan/deploy-kube)), you should tear those down first.
 
-### Tear down environment.
+### Tear down environment
 
 This command will tear down the deployed environment.
 
