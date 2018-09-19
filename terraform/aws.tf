@@ -6,6 +6,9 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
+// Data source for querying availability region AZs available to aws connector
+data "aws_availability_zones" "available" {}
+
 // Define the common tags for all resources
 // https://github.com/hashicorp/terraform/blob/master/website/docs/configuration/locals.html.md
 locals {

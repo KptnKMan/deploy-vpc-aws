@@ -1,6 +1,5 @@
 // Set AWS region details
-# aws_region              = "eu-west-1"
-# aws_availability_zones  = ["eu-west-1a","eu-west-1b","eu-west-1c"]
+aws_region              = "eu-west-1"
 
 // private key file
 key_name                = "kareempoc"

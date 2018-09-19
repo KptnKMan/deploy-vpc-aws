@@ -64,15 +64,13 @@ Alternatively, to configure all variables manually (Needs to be done each time a
 ```bash
 export TF_VAR_aws_access_key=AKIYOURACCESSKEYHERE
 export TF_VAR_aws_secret_key=kTHISISWHEREYOUPUTYOURAWSSECRETKEYHEREt1
-export TF_VAR_aws_region=eu-central-1
-export TF_VAR_aws_availability_zones=$(aws ec2 describe-availability-zones --output text | awk '{print "\""$4"\""};' | tr '\n' ',' | sed 's/,*$//g')
+export TF_VAR_aws_region=eu-west-1
 ```
 
 Windows:
 
 ```powershell
 Get-Content $HOME\Projects\deploy-vpc-aws\aws_credentials.env.[YOUR CREDENTIALS] | ForEach-Object { "$_"; $var = $_.Split('='); New-Variable -Name $var[0] -Value $var[1] -Scope Global }
-function get-zones-short { $aws_zones_raw = @(); (aws ec2 describe-availability-zones) -split "\s" | ForEach-Object {$aws_zones_raw += Select-String -InputObject $_ -Pattern '([a-z]+-[a-z]+-[0-9][a-z])'}; $aws_zones1 = $aws_zones_raw  -replace '"','' -replace ',',''; $aws_zones2 = $aws_zones1 -join '\",\"'; $Global:AWS_ZONES = $aws_zones1 -join ','; $Global:AWS_AVAILABILITY_ZONES = '\"'+$aws_zones2+'\"' } get-zones-short; $Global:AWS_AVAILABILITY_ZONES
 ```
 
 ## Creating and updating infrastructure

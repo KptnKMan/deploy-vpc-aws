@@ -8,12 +8,7 @@ variable "aws_secret_key" {
 
 variable "aws_region" {
   type = "string"
-  # default = "eu-west-1"
-}
-
-variable "aws_availability_zones" {
-  type = "list"
-  # default = ["eu-west-1a","eu-west-1b","eu-west-1c"]
+  default = "eu-west-1"
 }
 
 variable "key_name" {

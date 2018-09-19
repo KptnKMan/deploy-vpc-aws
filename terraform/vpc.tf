@@ -6,7 +6,11 @@ module "deploy_vpc" {
 
   name                 = "${var.deploy_name_short}-deploy-vpc"
 
-  azs                  = "${var.aws_availability_zones}"
+  azs                  = [
+    "${data.aws_availability_zones.available.names[0]}",
+    "${data.aws_availability_zones.available.names[1]}",
+    "${data.aws_availability_zones.available.names[2]}"
+  ]
 
   cidr                 = "${var.deploy_cidr}"
   private_subnets      = "${var.private_cidr}"
@@ -28,6 +32,12 @@ module "deploy_vpc" {
   tags = "${merge(
     local.aws_tags,
   )}"
+}
+
+// Pick a random PUBLIC subnet from AZ list (Eg: for bastion in random AZ)
+resource "random_shuffle" "random_az" {
+  input = ["${module.deploy_vpc.public_subnets}"] #["us-west-1a", "us-west-1c", "us-west-1d", "us-west-1e"]
+  result_count = 1
 }
 
 // THIS IS USED FOR TESTING!!!
@@ -106,11 +116,11 @@ output "vpc_region" {
 }
 
 output "vpc_region_azs" {
-  value = "${var.aws_availability_zones}"
-}
-
-output "vpc_region_azs2" {
-  value = "${var.aws_availability_zones}"
+  value = [
+    "${data.aws_availability_zones.available.names[0]}",
+    "${data.aws_availability_zones.available.names[1]}",
+    "${data.aws_availability_zones.available.names[2]}"
+  ]
 }
 
 output "vpc_id" {
