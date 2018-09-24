@@ -7,13 +7,15 @@ This doc is intended to:
 * Terraform instructions will be valid for other projects using this template.
   * Any contradiction of requirements/instructions, use the child templates instructions.
 
-## Basic premise
+## Notes - PLEASE READ
 
 * Pay attention to versions used. Use latest at your own risk.
-* Unless specified, all commands are in bash (Linux/MacOS) or Powershell v4+ (Windows), make sure your package mgmt tool is updated (Eg: `apt-get update`)
+* Unless specified, all commands are in bash (Linux/MacOS) or Powershell v4+ (Windows), make sure your OS and package mgmt tool is updated (Eg: `apt-get update`)
 * MacOS is assumed to be MacOSX (MacOS 10.12.6 tested)
 * Linux is assumed to be Ubuntu 16.04
 * Windows is assumed to be Microsoft Windows 10
+* Unless specified, all commands are run from root of repo directory
+  * Eg: `cd ~/Projects/deploy-vpc-aws)` (but your root dir is very likely to be different)
 
 ## Setup Tools
 
@@ -75,16 +77,6 @@ Get-Content $HOME\Projects\deploy-vpc-aws\aws_credentials.env.[YOUR CREDENTIALS]
 
 ## Creating and updating infrastructure
 
-### Notes
-
-* make sure all commands are run from root of repo directory
-
-Eg:
-
-```bash
-cd ~/Projects/deploy-vpc-aws)
-```
-
 ### Running Terraform
 
 You need to initialise the environment before you can deploy.
@@ -124,11 +116,11 @@ After any apply, there will be instructions of how to connect to the VPC bastion
 The instruction will show as Template outputs: `_connect_bastion_dns`, `_connect_bastion_ip` and `_connect_bastion_r53`
 
 ```bash
-_connect_bastion_dns = connect to bastion using: ssh -A ec2-user@ec2-11-12-13-14.eu-west-1.compute.amazonaws.com
-_connect_bastion_ip = connect to bastion using: ssh -A ec2-user@11.12.13.14
+_connect_bastion_dns = connect to bastion using: ssh -A ec2-user@ec2-10-11-12-13.eu-west-1.compute.amazonaws.com
+_connect_bastion_ip = connect to bastion using: ssh -A ec2-user@10.11.12.13
 ```
 
-If you are using an AWS Route53 hosted zone, there should also be an instruction to connect using DNS name:
+If you are using an AWS Route53 hosted zone, there should also be an additional instruction to connect using DNS name:
 
 ```bash
 _connect_bastion_r53 = connect to bastion using: ssh -A ec2-user@kareempoc-vpc-bastion.myr53domain.com
@@ -159,7 +151,7 @@ This command will tear down the deployed environment.
 terraform destroy -input=false -state="config/cluster.state" -var "cluster_config_location=config" -var-file="config/cluster.tfvars" "terraform"
 ```
 
-After teardown, you can additionally run the debug_cleanup.sh script if you wish to start fresh (Linux/Mac only).
+After teardown, you can additionally run the `debug_cleanup.sh` script if you wish to start fresh (Linux/Mac only).
 
 ```bash
 . debug_cleanup.sh

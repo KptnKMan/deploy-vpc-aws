@@ -1,10 +1,10 @@
 #!/bin/bash
 
-echo "$(tput setaf 3)\
-### README ###
-This script runs to set instance tags for spot instances
-because Terraform does not tag spot instances.
-### END ###$(tput sgr 0)"
+printf "$(tput setaf 3)\n\
+### README ###\n\
+This script runs to set instance tags for spot instances\n\
+because AWS API does not tag spot instances from a spot claim.\n\
+### END README ###$(tput sgr 0)\n"
 
 # Install additional requirements Ubuntu
 sudo apt-get update && sudo apt-get install -y python-pip
