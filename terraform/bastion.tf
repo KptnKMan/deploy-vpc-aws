@@ -38,7 +38,7 @@ resource "aws_spot_instance_request" "bastion_server" {
   user_data                   = "${data.template_file.cloud_config_amzlinux_bastion.rendered}"
   associate_public_ip_address = true
 
-  spot_type = "one-time"
+  spot_type = "persistent"
   spot_price = "${var.instance_types["spot_max_bid"]}"
   wait_for_fulfillment = true
 
