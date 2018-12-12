@@ -1,7 +1,7 @@
 // Define state location of this template (Used for remote state elsewhere)
 # terraform {
 #   backend "local" {
-#     path = "config/cluster.state"
+#     path = "config/terraform.tfstate"
 #   }
 # }
 

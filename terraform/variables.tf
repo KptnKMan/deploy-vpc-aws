@@ -1,3 +1,7 @@
+// Default variables file
+// Variables here are used if no variable is set elsewhere
+// Variables here are overriden by the deploy variables file
+
 variable cluster_config_location {
   type                  = "string"
   default               = "config"
