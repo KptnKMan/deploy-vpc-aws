@@ -119,56 +119,34 @@ resource "aws_iam_role_policy" "machine_role_policy_cloudwatch" {
 }
 EOF
 
-}// Policy to allow AWS instance Route53 Access, for LetsEncrypt
+}
+
+// Policy to allow AWS instance Route53 Access, for LetsEncrypt
+// Recommended Policy at https://cert-manager.readthedocs.io/en/latest/reference/issuers/acme/dns01.html#amazon-route53
 resource "aws_iam_role_policy" "machine_role_policy_route53" {
   name = "${var.deploy_name_short}-machine-role-policy-route53-update-records"
   role = "${aws_iam_role.machine_role.id}"
   policy = <<EOF
 {
     "Version": "2012-10-17",
-    "Statement": [
+      "Statement": [
         {
-            "Sid": "AllowAccessToRoute53",
+            "Effect": "Allow",
+            "Action": "route53:GetChange",
+            "Resource": "arn:aws:route53:::change/*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "route53:ChangeResourceRecordSets",
+            "Resource": "arn:aws:route53:::hostedzone/*"
+        },
+        {
             "Effect": "Allow",
             "Action": [
-                "route53:ListTrafficPolicyInstances",
-                "route53:ListTrafficPolicyVersions",
-                "route53:ListHostedZonesByName",
-                "route53:ListQueryLoggingConfigs",
-                "route53:ListTrafficPolicies",
-                "route53:ListResourceRecordSets",
-                "route53:ListGeoLocations",
-                "route53:ListReusableDelegationSets",
-                "route53:ListTrafficPolicyInstancesByHostedZone",
-                "route53:ListHostedZones",
-                "route53:ListVPCAssociationAuthorizations",
-                "route53:ListTagsForResource",
-                "route53:ListTagsForResources",
-                "route53:ListTrafficPolicyInstancesByPolicy",
-                "route53:ListHealthChecks",
-                "route53:GetTrafficPolicyInstanceCount",
-                "route53:GetChange",
-                "route53:GetHostedZone",
-                "route53:GetHealthCheck",
-                "route53:GetCheckerIpRanges",
-                "route53:GetTrafficPolicyInstance",
-                "route53:GetHostedZoneCount",
-                "route53:GetHealthCheckCount",
-                "route53:GetQueryLoggingConfig",
-                "route53:GetHealthCheckLastFailureReason",
-                "route53:GetHealthCheckStatus",
-                "route53:GetReusableDelegationSetLimit",
-                "route53:GetReusableDelegationSet",
-                "route53:GetAccountLimit",
-                "route53:GetGeoLocation",
-                "route53:GetHostedZoneLimit",
-                "route53:GetTrafficPolicy",
-                "route53:TestDNSAnswer",
-                "route53:ChangeResourceRecordSets"
+              "route53:ListHostedZonesByName",
+              "route53:ListResourceRecordSets"
             ],
-            "Resource": [
-                "*"
-            ]
+            "Resource": "*"
         }
     ]
 }
