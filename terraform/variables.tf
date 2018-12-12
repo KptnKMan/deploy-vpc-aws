@@ -1,69 +1,75 @@
+variable cluster_config_location {
+  type                  = "string"
+  default               = "config"
+}
+
 variable "aws_access_key" {
-  type = "string"
+  type                  = "string"
 }
 
 variable "aws_secret_key" {
-  type = "string"
+  type                  = "string"
 }
 
 variable "aws_region" {
-  type = "string"
-  default = "eu-west-1"
+  type                  = "string"
+  default               = "eu-west-1"
 }
 
 variable "key_name" {
-  type = "string"
+  type                  = "string"
+  default               = "kareempoc"
 }
 
 variable "deploy_name" {
-  type = "string"
+  type                  = "string"
+  default               = "Kareem POC Base VPC"
 }
 
 variable "deploy_name_short" {
-  type = "string"
+  type                  = "string"
+  default               = "kareempocvpc"
 }
 
 variable "dns_domain_public" {
-  type = "string"
+  type                  = "string"
 }
 
 variable "dns_urls" {
-  type = "map"
-
+  type                  = "map"
   default = {
+    url_bastion         = "kareempoc-vpc-bastion"
   }
 }
 
 variable "deploy_cidr" {
-  type = "string"
+  type                  = "string"
+  default               = "10.1.0.0/16"
 }
 
 variable "private_cidr" {
-  type = "list"
+  type                  = "list"
+  default               = ["10.1.0.0/24", "10.1.1.0/24", "10.1.2.0/24"]
 }
 
 variable "public_cidr" {
-  type = "list"
+  type                  = "list"
+  default               = ["10.1.10.0/24", "10.1.11.0/24", "10.1.12.0/24"]
+}
+
+variable "management_ips" {
+  type                  = "string"
+}
+
+variable "management_ips_personal" {
+  type                  = "string"
 }
 
 variable "instance_types" {
   default = {
-    bastion             = "t2.micro" #"m3.medium"
-
-    spot_max_bid        = "7.2"
+    bastion             = "m3.medium"
+    spot_max_bid        = "0.073"
   }
-}
-
-variable "management_ips" {
-  type = "string"
-}
-
-variable "management_ips_personal" {
-  type = "string"
-}
-
-variable cluster_config_location {
-  type = "string"
 }
 
 variable "cluster_tags" {
