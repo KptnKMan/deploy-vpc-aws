@@ -1,4 +1,10 @@
-// Set AWS region details
+// Configure where to store config files, like state
+# project_config_location = "config"
+
+// Set AWS credentials and region
+// Put these in here if you are not using ENV VARs
+# aws_access_key          = "reYOURACCESSKEYHEREg"
+# aws_secret_key          = "rePUTYOURSUPERSECRETHERETHISISANEXAMPLEr"
 aws_region              = "eu-west-1"
 
 // private key file
@@ -21,11 +27,11 @@ private_cidr            = ["10.1.0.0/24", "10.1.1.0/24", "10.1.2.0/24"]
 
 public_cidr             = ["10.1.10.0/24", "10.1.11.0/24", "10.1.12.0/24"]
 
-//Business IPs:            AddYourIpHERE
-management_ips          = "1.1.1.1/32"
+//Business IPs:            WorkivaAmsterdam   WorkivaAmes        ISUGuest           AmesRadissom      MikesHouse
+management_ips          = "193.240.177.194/32,205.237.120.225/32,129.186.251.116/32,63.236.134.110/32,94.2.114.207/32"
 
-// Team Personal IPs:      AddYourPersonalIpHERE
-management_ips_personal = "2.2.2.2/32"
+// Team Personal IPs:      KareemHome       HotspotAmes
+management_ips_personal = "80.114.86.181/32,172.56.11.48/32"
 
 instance_types = {
   // instance sizes of ec2 instances - may require terraform taint of ASG to update
