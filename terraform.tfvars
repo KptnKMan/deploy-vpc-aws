@@ -7,9 +7,9 @@
 
 // Set AWS credentials and region
 // Put these in here if you are not using ENV VARs
-aws_access_key          = "reYOURACCESSKEYHEREg"
-aws_secret_key          = "rePUTYOURSUPERSECRETHERETHISISANEXAMPLEr"
-aws_region              = "eu-west-1"
+# aws_access_key          = "reYOURACCESSKEYHEREg"
+# aws_secret_key          = "rePUTYOURSUPERSECRETHERETHISISANEXAMPLEr"
+# aws_region              = "eu-west-1"
 
 // private key file
 # key_name                = "kareempoc"
