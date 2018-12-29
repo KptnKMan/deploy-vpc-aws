@@ -16,6 +16,32 @@ This doc is intended to:
 * Windows is assumed to be Microsoft Windows 10
 * Unless specified, all commands are run from root of repo directory
   * Eg: `cd ~/Projects/deploy-vpc-aws)` (but your root dir is very likely to be different)
+* Remember, if you have deployed any dependant templates ([Hint hint](https://github.com/KptnKMan/deploy-kube)), you should tear those down first.
+
+## TL;DR / Quickstart
+
+Here are the quick start instructions, using bash:
+
+```bash
+# setup variables
+export TF_VAR_aws_access_key=AKIYOURACCESSKEYHERE
+export TF_VAR_aws_secret_key=kTHISISWHEREYOUPUTYOURAWSSECRETKEYHEREt1
+export TF_VAR_aws_region=eu-west-1
+
+# setup TF environment
+terraform get terraform
+terraform init terraform
+terraform plan terraform
+terraform apply terraform
+
+# destroy environment
+terraform destroy terraform
+
+# cleanup
+./debug_cleanup.sh
+```
+
+More detailed instructions are below.
 
 ## Setup Tools
 
@@ -83,21 +109,21 @@ You need to initialise the environment before you can deploy.
 This will download any modules and provisioners you need.
 
 ```bash
-terraform init terraform
 terraform get terraform
+terraform init terraform
 ```
 
 This is an optional step to display changes, without the intention to apply them now.
 Useful for planning changes and checking for template errors.
 
 ```bash
-terraform plan -input=false -state="config/cluster.state" -var "cluster_config_location=config" -var-file="config/cluster.tfvars" "terraform"
+terraform plan terraform
 ```
 
 This is where we're cooking with gas, applying our desired state to the remote environment(s).
 
 ```bash
-terraform apply -input=false -state="config/cluster.state" -var "cluster_config_location=config" -var-file="config/cluster.tfvars" "terraform"
+terraform apply terraform
 ```
 
 ## Connecting to resources
@@ -139,7 +165,7 @@ ssh ubuntu@10.11.12.13
 
 ## Cleanup
 
-### Notes
+### Extra Notes
 
 * Remember, if you have deployed any dependant templates ([Hint hint](https://github.com/KptnKMan/deploy-kube)), you should tear those down first.
 
@@ -148,11 +174,27 @@ ssh ubuntu@10.11.12.13
 This command will tear down the deployed environment.
 
 ```bash
-terraform destroy -input=false -state="config/cluster.state" -var "cluster_config_location=config" -var-file="config/cluster.tfvars" "terraform"
+terraform destroy terraform
 ```
 
 After teardown, you can additionally run the `debug_cleanup.sh` script if you wish to start fresh (Linux/Mac only).
 
 ```bash
 . debug_cleanup.sh
+```
+
+This script will:
+
+* delete dir `config/ssl`
+* delete all ssh keys in dir `config`
+* delete `terraform.tfstate` and `terraform.tfstate.backup`
+
+## Extras
+
+Optionally, you can specify locations of configs:
+
+```bash
+terraform plan -input=false -state="config/cluster.state" -var "cluster_config_location=config" -var-file="config/cluster.tfvars" "terraform"
+terraform apply -input=false -state="config/cluster.state" -var "cluster_config_location=config" -var-file="config/cluster.tfvars" "terraform"
+terraform destroy -input=false -state="config/cluster.state" -var "cluster_config_location=config" -var-file="config/cluster.tfvars" "terraform"
 ```
