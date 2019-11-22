@@ -1,6 +1,6 @@
 // CONFIGURE ROUTE53 DNS ZONE
 data "aws_route53_zone" "dns_domain_public" {
-  name         = "${var.dns_domain_public}."
+  name = "${var.dns_domain_public}."
   #private_zone = true
 }
 
@@ -17,8 +17,8 @@ data "aws_route53_zone" "dns_domain_public" {
 ## clustername-bastion.mydomain.com
 
 resource "aws_route53_record" "ops_bastion" {
-  zone_id = "${data.aws_route53_zone.dns_domain_public.zone_id}"
-  name    = "${var.dns_urls["url_bastion"]}"
+  zone_id = data.aws_route53_zone.dns_domain_public.zone_id
+  name    = var.dns_urls["url_bastion"]
   type    = "CNAME"
   ttl     = "5"
 
@@ -26,8 +26,8 @@ resource "aws_route53_record" "ops_bastion" {
     weight = 10
   }
 
-  set_identifier = "${var.dns_urls["url_bastion"]}"
-  records        = ["${aws_spot_instance_request.bastion_server.public_dns}"]
+  set_identifier = var.dns_urls["url_bastion"]
+  records        = [aws_spot_instance_request.bastion_server.public_dns]
 }
 
 # resource "aws_route53_record" "ops_bastion" {
@@ -54,5 +54,6 @@ output "_connect_bastion_r53" {
 }
 
 output "route53_zone_id" {
-  value = "${data.aws_route53_zone.dns_domain_public.zone_id}"
+  value = data.aws_route53_zone.dns_domain_public.zone_id
 }
+

@@ -7,5 +7,6 @@
 
 //Outputs
 output "path_module" {
-  value = "${path.module}"
+  value = path.module
 }
+

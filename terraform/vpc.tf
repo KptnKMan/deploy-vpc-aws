@@ -1,42 +1,41 @@
 // Primary Deployment VPC
 module "deploy_vpc" {
   #source               = "github.com/terraform-community-modules/tf_aws_vpc" # depreciated
-  source               = "github.com/terraform-aws-modules/terraform-aws-vpc" # replaced depreciated module repo
+  source = "github.com/terraform-aws-modules/terraform-aws-vpc"
+
   #source               = "terraform-aws-modules/vpc/aws" # same as new module repo
 
-  name                 = "${var.deploy_name_short}-deploy-vpc"
+  name = "${var.deploy_name_short}-deploy-vpc"
 
-  azs                  = [
-    "${data.aws_availability_zones.available.names[0]}",
-    "${data.aws_availability_zones.available.names[1]}",
-    "${data.aws_availability_zones.available.names[2]}"
+  azs = [
+    data.aws_availability_zones.available.names[0],
+    data.aws_availability_zones.available.names[1],
+    data.aws_availability_zones.available.names[2],
   ]
 
-  cidr                 = "${var.deploy_cidr}"
-  private_subnets      = "${var.private_cidr}"
-  public_subnets       = "${var.public_cidr}"
-  
+  cidr            = var.deploy_cidr
+  private_subnets = var.private_cidr
+  public_subnets  = var.public_cidr
+
   map_public_ip_on_launch = true
 
   enable_dns_hostnames = true
   enable_dns_support   = true
 
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
+  enable_nat_gateway = true
+  single_nat_gateway = true
 
-  enable_vpn_gateway   = false
+  enable_vpn_gateway = false
 
-  enable_s3_endpoint   = false
+  enable_s3_endpoint       = false
   enable_dynamodb_endpoint = false
 
-  tags = "${merge(
-    local.aws_tags,
-  )}"
+  tags = merge(local.aws_tags)
 }
 
 // Pick a random PUBLIC subnet from AZ list (Eg: for bastion in random AZ)
 resource "random_shuffle" "random_az" {
-  input = ["${module.deploy_vpc.public_subnets}"] #["us-west-1a", "us-west-1c", "us-west-1d", "us-west-1e"]
+  input        = module.deploy_vpc.public_subnets #["us-west-1a", "us-west-1c", "us-west-1d", "us-west-1e"]
   result_count = 1
 }
 
@@ -53,9 +52,9 @@ resource "random_shuffle" "random_az" {
 
 // Common Security Group for all machines
 resource "aws_security_group" "common_sg" {
-  name          = "${var.deploy_name_short}-sg-common"
-  description   = "base deploy ${var.deploy_name_short} Common Traffic support on all machines"
-  vpc_id        = "${module.deploy_vpc.vpc_id}"
+  name        = "${var.deploy_name_short}-sg-common"
+  description = "base deploy ${var.deploy_name_short} Common Traffic support on all machines"
+  vpc_id      = module.deploy_vpc.vpc_id
 
   // Allow all outbound tcp traffic
   egress {
@@ -89,7 +88,7 @@ resource "aws_security_group" "common_sg" {
     to_port     = "0"
     protocol    = "icmp"
     self        = true
-    cidr_blocks = ["${split(",", var.management_ips)}","${split(",", var.management_ips_personal)}"]
+    cidr_blocks = split(",", join(",", [var.management_ips, var.management_ips_personal]))
   }
 
   // Allow SSH from bastion
@@ -97,44 +96,45 @@ resource "aws_security_group" "common_sg" {
     from_port       = "22"
     to_port         = "22"
     protocol        = "tcp"
-    security_groups = ["${aws_security_group.bastion_sg.id}"]
+    security_groups = [aws_security_group.bastion_sg.id]
   }
 
   // set tags
 
-  tags = "${merge(
+  tags = merge(
     local.aws_tags,
-    map(
-      "Name", "${var.deploy_name_short}-sg-common"
-    )
-  )}"
+    {
+      "Name" = "${var.deploy_name_short}-sg-common"
+    },
+  )
 }
 
 // Outputs
 output "vpc_region" {
-  value = "${var.aws_region}"
+  value = var.aws_region
 }
 
 output "vpc_region_azs" {
   value = [
-    "${data.aws_availability_zones.available.names[0]}",
-    "${data.aws_availability_zones.available.names[1]}",
-    "${data.aws_availability_zones.available.names[2]}"
+    data.aws_availability_zones.available.names[0],
+    data.aws_availability_zones.available.names[1],
+    data.aws_availability_zones.available.names[2],
   ]
 }
 
 output "vpc_id" {
-  value = "${module.deploy_vpc.vpc_id}"
+  value = module.deploy_vpc.vpc_id
 }
 
 output "vpc_subnets_public" {
-  value = "${module.deploy_vpc.public_subnets}"
+  value = module.deploy_vpc.public_subnets
 }
 
 output "vpc_subnets_private" {
-  value = "${module.deploy_vpc.private_subnets}"
+  value = module.deploy_vpc.private_subnets
 }
 
 output "sg_id_common" {
-  value = "${aws_security_group.common_sg.id}"
+  value = aws_security_group.common_sg.id
 }
+

@@ -18,7 +18,7 @@ Best to start at the [setup doc](docs/setup.md) to setup an environment.
 
 ## Basic Requirements
 
-* Terraform 0.11.7
+* Terraform 0.12.16
 * ~~an ssh public/private keypair in /config dir~~
   * a key will be auto-generated into the /config dir
 
@@ -42,7 +42,7 @@ AWS
 
 Versions tested:
 
-* terraform: 0.8.8 upto 0.11.7
+* terraform: 0.8.8 upto 0.12.16
 
 Terraform Outputs:
 
@@ -56,6 +56,6 @@ Terraform Outputs:
 * Documentation
 * AWS-specific
 * Terraform
-  * [x] update terraform to latest 10.x+
+  * [x] update terraform to latest 0.12.x+
   * [x] Fix some terraform code inconstencies
 * Other

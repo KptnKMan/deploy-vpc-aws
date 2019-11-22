@@ -12,7 +12,7 @@ This doc is intended to:
 * Pay attention to versions used. Use latest at your own risk.
 * Unless specified, all commands are in bash (Linux/MacOS) or Powershell v4+ (Windows), make sure your OS and package mgmt tool is updated (Eg: `apt-get update`)
 * MacOS is assumed to be MacOSX (MacOS 10.12.6 tested)
-* Linux is assumed to be Ubuntu 16.04
+* Linux is assumed to be latest Debian or Ubuntu
 * Windows is assumed to be Microsoft Windows 10
 * Unless specified, all commands are run from root of repo directory
   * Eg: `cd ~/Projects/deploy-vpc-aws)` (but your root dir is very likely to be different)
@@ -50,22 +50,22 @@ More detailed instructions are below.
 Linux:
 
 ```bash
-curl -L https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_linux_amd64.zip -o /tmp/terraform.zip && unzip -o /tmp/terraform.zip -d /tmp/
+curl -L https://releases.hashicorp.com/terraform/0.12.16/terraform_0.12.16_linux_amd64.zip -o /tmp/terraform.zip && unzip -o /tmp/terraform.zip -d /tmp/
 sudo mv /tmp/terraform /usr/bin/ && rm -Rf /tmp/terraform.zip
 ```
 
 MacOS:
 
 ```bash
-curl -L https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_darwin_amd64.zip -o /tmp/terraform.zip && unzip -o /tmp/terraform.zip -d /tmp/
+curl -L https://releases.hashicorp.com/terraform/0.12.16/terraform_0.12.16_darwin_amd64.zip -o /tmp/terraform.zip && unzip -o /tmp/terraform.zip -d /tmp/
 sudo mv /tmp/terraform /usr/local/bin/ && rm -Rf /tmp/terraform.zip
 ```
 
 Windows:
 
 ```powershell
-Invoke-WebRequest -Uri https://releases.hashicorp.com/terraform/0.11.7/terraform_0.11.7_windows_amd64.zip -Outfile $Env:USERPROFILE\Downloads\terraform_0.11.7_windows_amd64.zip
-Expand-Archive $HOME\Downloads\terraform_0.11.7_windows_amd64.zip -DestinationPath $env:SystemRoot
+Invoke-WebRequest -Uri https://releases.hashicorp.com/terraform/0.12.16/terraform_0.12.16_windows_amd64.zip -Outfile $Env:USERPROFILE\Downloads\terraform_0.12.16_windows_amd64.zip
+Expand-Archive $HOME\Downloads\terraform_0.12.16_windows_amd64.zip -DestinationPath $env:SystemRoot
 ```
 
 ## Setup Environment Variables
@@ -188,6 +188,14 @@ This script will:
 * delete dir `config/ssl`
 * delete all ssh keys in dir `config`
 * delete `terraform.tfstate` and `terraform.tfstate.backup`
+
+## Troubleshooting
+
+If you are using WSL (Windows Subsystem for Linux), you will need to run a command before Terraform:
+
+```bash
+eval $(ssh-agent -s)
+```
 
 ## Extras
 
