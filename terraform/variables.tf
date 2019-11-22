@@ -22,17 +22,17 @@ variable "aws_region" {
 
 variable "key_name" {
   type    = string
-  default = "kareems-super-poc"
+  default = "kareems-poc"
 }
 
 variable "deploy_name" {
   type    = string
-  default = "Kareems Super POC Base VPC"
+  default = "Kareems POC Base VPC"
 }
 
 variable "deploy_name_short" {
   type    = string
-  default = "kareemsuperpocvpc"
+  default = "kareempocvpc"
 }
 
 variable "dns_domain_public" {
@@ -42,7 +42,7 @@ variable "dns_domain_public" {
 variable "dns_urls" {
   type = map(string)
   default = {
-    url_bastion = "kareemsuperpoc-vpc-bastion"
+    url_bastion = "kareempoc-vpc-bastion"
   }
 }
 
@@ -80,8 +80,8 @@ variable "cluster_tags" {
   default = {
     Role          = "Dev"
     Service       = "Base Infrastructure"
-    Business-Unit = "INFRE"
-    Owner         = "OpsEng"
+    Business-Unit = "Operations"
+    Owner         = "Ops"
     Purpose       = "Base VPC"
   }
 }
