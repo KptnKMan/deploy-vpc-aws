@@ -111,7 +111,7 @@ resource "aws_security_group" "common_sg" {
 
 // Outputs
 output "vpc_region" {
-  value = var.aws_region
+  value = data.aws_region.current.name
 }
 
 output "vpc_region_azs" {

@@ -6,6 +6,10 @@ provider "aws" {
   region = var.aws_region
 }
 
+// Data source for querying current region
+data "aws_region" "current" {
+}
+
 // Data source for querying availability region AZs available to aws connector
 data "aws_availability_zones" "available" {
 }

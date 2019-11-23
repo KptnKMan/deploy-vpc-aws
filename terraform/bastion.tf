@@ -26,6 +26,7 @@ resource "aws_security_group_rule" "allow_bastion_to_common" {
   from_port       = 22
   to_port         = 22
   protocol        = "tcp"
+  description     = "Allow bastion to access instances"
 
   source_security_group_id = aws_security_group.bastion_sg.id
   security_group_id = aws_security_group.common_sg.id
@@ -77,6 +78,21 @@ resource "aws_spot_instance_request" "bastion_server" {
   provisioner "remote-exec" {
     inline = [
       "bash /home/ec2-user/set_spot_ec2_tags.sh ${var.aws_access_key} ${var.aws_secret_key} ${var.aws_region} ${aws_spot_instance_request.bastion_server.id} ${aws_spot_instance_request.bastion_server.spot_instance_id}",
+      "echo 'INFO: Finished tools installations'",
+    ]
+    connection {
+      host     = coalesce(self.public_ip, self.private_ip)
+      # password = self.password != "" ? self.password : null
+      type     = "ssh"
+      user     = "ec2-user"
+    }
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "aws --region ${var.aws_region} ec2 describe-spot-instance-requests --spot-instance-request-ids ${aws_spot_instance_request.bastion_server.id} --query 'SpotInstanceRequests[0].Tags' > tags.json",
+      "aws --region ${var.aws_region} ec2 create-tags --resources ${aws_spot_instance_request.bastion_server.spot_instance_id} --tags file://tags.json && rm -rf tags.json",
+      "echo 'INFO: Finished tagging instance'"
     ]
     connection {
       host     = coalesce(self.public_ip, self.private_ip)
