@@ -91,13 +91,13 @@ resource "aws_security_group" "common_sg" {
     cidr_blocks = split(",", join(",", [var.management_ips, var.management_ips_personal]))
   }
 
-  // Allow SSH from bastion
-  ingress {
-    from_port       = "22"
-    to_port         = "22"
-    protocol        = "tcp"
-    security_groups = [aws_security_group.bastion_sg.id]
-  }
+  # // Allow SSH from bastion
+  # ingress {
+  #   from_port       = "22"
+  #   to_port         = "22"
+  #   protocol        = "tcp"
+  #   security_groups = [aws_security_group.bastion_sg.id]
+  # }
 
   // set tags
 

@@ -20,6 +20,17 @@ resource "aws_security_group" "bastion_sg" {
   )
 }
 
+// Rule to add bastion_sg access to common_sg
+resource "aws_security_group_rule" "allow_bastion_to_common" {
+  type            = "ingress"
+  from_port       = 22
+  to_port         = 22
+  protocol        = "tcp"
+
+  source_security_group_id = aws_security_group.bastion_sg.id
+  security_group_id = aws_security_group.common_sg.id
+}
+
 // Cloud config template for bastion
 data "template_file" "cloud_config_amzlinux_bastion" {
   template = file("terraform/templates/cloud_config_amzlinux_bastion.yml")
